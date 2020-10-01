@@ -4,7 +4,7 @@ import { TestContext } from "./__helpers__/context";
 import { runTestProject } from "./__helpers__/testProject";
 
 const ctx = new TestContext();
-describe("dev tests - ", () => {
+describe.skip("dev tests - ", () => {
   beforeEach(async () => {
     await ctx.beforeEach();
   });
