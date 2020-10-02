@@ -1,29 +1,19 @@
 import { SourceFile } from "ts-morph";
-import { NextFunctions, NextFunctionType } from "./constants";
+import { NextFunctionName, NextFunctions, NextFunctionType } from "./constants";
+
 /**
- * Adds Missing Next Imports depending on the exports
- * as next requires `getStaticProps` and `getServerSideProps`
- * to be exported
- * @param sourceFile
+ * Adds Missing Next Imports depending function which have been found
  */
 export function addMissingImports(
-  sourceFile: SourceFile
-): NextFunctionType {
-  const exports = sourceFile.getSymbol().getExports();
-  const foundFunctions = {};
-  exports.forEach((e) => {
-    const name = e.getName();
-    if (Object.keys(NextFunctions).includes(name)) {
-      const typeToImport = NextFunctions[name].import;
-      addImportIfMissing(sourceFile, typeToImport);
-      foundFunctions[name] = NextFunctions[name];
-      // console.log(e.getValueDeclaration());
-    }
-  });
-  return foundFunctions;
+  sourceFile: SourceFile,
+  foundNextFunctions: NextFunctionType
+) {
+  Object.keys(foundNextFunctions).forEach((functionName: NextFunctionName) => {
+    addImportIfMissing(sourceFile, foundNextFunctions[functionName].import);
+  })
 }
 
-export function addImportIfMissing(sourceFile: SourceFile, type) {
+export function addImportIfMissing(sourceFile: SourceFile, type: string) {
   // import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
   let nextImport = sourceFile.getImportDeclaration("next");
   let hasTypeImport = false;

@@ -4,8 +4,7 @@ import { TestContext } from "./__helpers__/context";
 import { runTestProject } from "./__helpers__/testProject";
 
 const ctx = new TestContext();
-
-describe("const tests - ", () => {
+describe("jsdoc tests - ", () => {
   beforeEach(async () => {
     await ctx.beforeEach();
   });
@@ -13,8 +12,10 @@ describe("const tests - ", () => {
   afterEach(async () => {
     await ctx.afterEach();
   });
-  const variations = buildVariations({
-    page: (value) => value.includes("const"),
+  const variations = buildVariations('jsx',{
+    page: (value) => {
+      return value.includes("function");
+    },
   });
   Object.keys(variations).map((testFileName) => {
     // eslint-disable-next-line jest/expect-expect
@@ -22,8 +23,8 @@ describe("const tests - ", () => {
       const testDir = await ctx.setup({
         fs: { [testFileName]: variations[testFileName] },
       });
-      await runTestProject(testDir, testFileName);
 
+      await runTestProject(testDir, testFileName);
       await ctx.snapshotFiles();
     });
   });

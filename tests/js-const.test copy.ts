@@ -4,8 +4,7 @@ import { TestContext } from "./__helpers__/context";
 import { runTestProject } from "./__helpers__/testProject";
 
 const ctx = new TestContext();
-
-describe("function tests -", () => {
+describe("jsdoc tests - ", () => {
   beforeEach(async () => {
     await ctx.beforeEach();
   });
@@ -13,9 +12,9 @@ describe("function tests -", () => {
   afterEach(async () => {
     await ctx.afterEach();
   });
-  const variations = buildVariations({
+  const variations = buildVariations('jsx',{
     page: (value) => {
-      return value.includes("function");
+      return value.includes("const");
     },
   });
   Object.keys(variations).map((testFileName) => {

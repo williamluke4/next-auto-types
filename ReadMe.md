@@ -1,12 +1,23 @@
 # AutoTypes for NextJSs Funky Function
 
-## Setup
+## Current Issues/Limitations
 
-```
-yarn
-```
+- JS Docs will only be inserted to function declerations
+- `InferGetServerSidePropsType` and `InferGetStaticPropsType` will not work if the corresponding function i.e `getServerSideProps` uses destructured props
+
+#### Good
+
+`getServerSideProps(ctx) `
+
+#### Bad
+
+`getServerSideProps({why, doesnt, this, work}) `
 
 ## Development
+
+### Setup
+
+`yarn`
 
 ### Running all tests
 
@@ -20,7 +31,7 @@ Then run `yarn dev` and check the snapshot
 You are able to filter the tests by modifying the filter function on `buildVariations`
 
 ```
-buildVariations({
+buildVariations('tsx', {
   page: (value) => {
     return value.includes("const_named");
   },

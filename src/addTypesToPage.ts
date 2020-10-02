@@ -22,13 +22,8 @@ function addType(node: ArrowFunction | FunctionDeclaration, allTypes: string) {
     });
   }
 }
-
-export function addTypesToPage(
-  sourceFile: SourceFile,
-  foundNextFunctions: NextFunctionType
-) {
-  const defaultExportSymbol = sourceFile.getDefaultExportSymbol();
-  const allTypes = Object.keys(foundNextFunctions).reduce(
+function buildTypeString(foundNextFunctions: NextFunctionType){
+  return Object.keys(foundNextFunctions).reduce(
     (acc, functionName) => {
       const type = foundNextFunctions[functionName as NextFunctionName].type;
       if (acc) {
@@ -40,18 +35,25 @@ export function addTypesToPage(
     },
     ""
   );
+}
+export function addTypesToPage(
+  sourceFile: SourceFile,
+  foundNextFunctions: NextFunctionType
+) {
+  const defaultExportSymbol = sourceFile.getDefaultExportSymbol();
+  const typeString = buildTypeString(foundNextFunctions)
   if (defaultExportSymbol) {
     // you will need to handle more scenarios than what's shown here
     const declaration = defaultExportSymbol.getDeclarations()[0];
     if (!declaration) return;
 
     if (TypeGuards.isFunctionDeclaration(declaration)) {
-      addType(declaration, allTypes);
+      addType(declaration, typeString);
     } else if (TypeGuards.isExportAssignment(declaration)) {
       const expr = declaration.getExpression();
 
       if (TypeGuards.isArrowFunction(expr)) {
-        addType(expr, allTypes);
+        addType(expr, typeString);
       } else if (TypeGuards.isIdentifier(expr)) {
         const node = expr
           .findReferences()[0]
@@ -60,12 +62,12 @@ export function addTypesToPage(
         const child =  node.getLastChild()
 
         if (TypeGuards.isFunctionDeclaration(node) || TypeGuards.isArrowFunction(node)) {
-          addType(node, allTypes);
+          addType(node, typeString);
         } else if (
           TypeGuards.isArrowFunction(child) ||
           TypeGuards.isFunctionDeclaration(child)
         ) {
-          addType(child, allTypes);
+          addType(child, typeString);
         } else {
           console.log("Unhandled Case 1", child.getKindName());
         }

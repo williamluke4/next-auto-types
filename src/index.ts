@@ -1,7 +1,9 @@
 import { join } from "path";
 import { Project, ProjectOptions } from "ts-morph";
 import { addMissingImports } from "./addImports";
+import { addJSDoc } from "./addJSDoc";
 import { addTypesToPage } from "./addTypesToPage";
+import { getUsedNextFunctions, isJS } from "./utils";
 
 interface Options {
   tsProjectOptions?: ProjectOptions;
@@ -23,8 +25,13 @@ export async function run(projectDir: string, options?: Options) {
   // Add source files
   const sourceFiles = project.addSourceFilesAtPaths(globs);
   sourceFiles.forEach((sourceFile) => {
-    const foundFunctions = addMissingImports(sourceFile);
-    addTypesToPage(sourceFile, foundFunctions);
+    const foundFunctions = getUsedNextFunctions(sourceFile)
+    if(isJS(sourceFile)){
+      addJSDoc(sourceFile, foundFunctions)
+    }else {
+      addMissingImports(sourceFile, foundFunctions);
+      addTypesToPage(sourceFile, foundFunctions);
+    }
   });
   if (options.save) {
     await project.save();

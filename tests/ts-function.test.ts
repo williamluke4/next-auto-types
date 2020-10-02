@@ -1,10 +1,10 @@
-import { run } from "../src";
 import { buildVariations } from "./__helpers__/buildVariations";
 import { TestContext } from "./__helpers__/context";
 import { runTestProject } from "./__helpers__/testProject";
 
 const ctx = new TestContext();
-describe.skip("dev tests - ", () => {
+
+describe("function tests -", () => {
   beforeEach(async () => {
     await ctx.beforeEach();
   });
@@ -12,11 +12,10 @@ describe.skip("dev tests - ", () => {
   afterEach(async () => {
     await ctx.afterEach();
   });
-  const variations = buildVariations('tsx',{
+  const variations = buildVariations("tsx", {
     page: (value) => {
-      return value.includes("const_named");
+      return value.includes("function");
     },
-    import: (value) => value.includes("server"),
   });
   Object.keys(variations).map((testFileName) => {
     // eslint-disable-next-line jest/expect-expect
